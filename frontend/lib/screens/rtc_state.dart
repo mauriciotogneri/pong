@@ -28,8 +28,6 @@ class RtcState extends BaseState {
       channel.onMessage = (message) => _onReceive(message.text);
       channel.onDataChannelState = _onStateChanged;
     };
-
-    notify();
   }
 
   /*Future _createOffer() async {
