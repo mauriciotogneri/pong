@@ -1,15 +1,15 @@
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dafluta/dafluta.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:pong/models/answer.dart';
+import 'package:pong/models/candidate.dart';
 import 'package:pong/models/offer.dart';
 
 class RtcState extends BaseState {
   RTCPeerConnection? _peerConnection;
   RTCDataChannel? _dataChannel;
   String received = '';
-  final List<dynamic> _candidates = [];
+  final List<Candidate> _candidates = [];
 
   bool get isConnected =>
       _dataChannel?.state == RTCDataChannelState.RTCDataChannelOpen;
@@ -34,13 +34,18 @@ class RtcState extends BaseState {
     });
 
     result.onIceCandidate = (candidate) {
-      _candidates.add(candidate.toMap());
-      print('ICE candidates: ${jsonEncode(_candidates)}');
+      _candidates.add(
+        Candidate(
+          candidate: candidate.candidate,
+          sdpMid: candidate.sdpMid,
+          sdpMLineIndex: candidate.sdpMLineIndex,
+        ),
+      );
     };
 
     result.onDataChannel = (channel) {
       _dataChannel = channel;
-      channel.onMessage = (message) => _onReceive(message.text);
+      channel.onMessage = _onReceive;
       channel.onDataChannelState = _onStateChanged;
     };
 
@@ -104,16 +109,15 @@ class RtcState extends BaseState {
     await _peerConnection!.setRemoteDescription(remote);
   }
 
-  Future _addCandidates() async {
-    final List<dynamic> data = jsonDecode(_sdpController.text) as List<dynamic>;
-
-    for (final dynamic element in data) {
-      final RTCIceCandidate candidate = RTCIceCandidate(
-        element['candidate'],
-        element['sdpMid'],
-        element['sdpMLineIndex'],
+  Future _addCandidates(List<Candidate> candidates) async {
+    for (final Candidate candidate in candidates) {
+      await _peerConnection!.addCandidate(
+        RTCIceCandidate(
+          candidate.candidate,
+          candidate.sdpMid,
+          candidate.sdpMLineIndex,
+        ),
       );
-      await _peerConnection!.addCandidate(candidate);
     }
   }
 
@@ -121,9 +125,9 @@ class RtcState extends BaseState {
     _dataChannel?.send(RTCDataChannelMessage('Hello from Dart!'));
   }
 
-  void _onReceive(String message) {
+  void _onReceive(RTCDataChannelMessage message) {
     print('Received message: $message');
-    received = message;
+    received = message.text;
     notify();
   }
 
