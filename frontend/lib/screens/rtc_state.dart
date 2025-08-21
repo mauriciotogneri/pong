@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dafluta/dafluta.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:pong/models/answer.dart';
+import 'package:pong/models/offer.dart';
 
 class RtcState extends BaseState {
   RTCPeerConnection? _peerConnection;
@@ -12,64 +15,96 @@ class RtcState extends BaseState {
       _dataChannel?.state == RTCDataChannelState.RTCDataChannelOpen;
 
   Future onConnect() async {
-    _peerConnection = await createPeerConnection({
+    _peerConnection = await _createConnection();
+
+    final Offer? offer = await _getExistingOffer();
+
+    if (offer != null) {
+      await _createAnswer(offer);
+    } else {
+      await _createOffer();
+    }
+  }
+
+  Future<RTCPeerConnection> _createConnection() async {
+    final RTCPeerConnection result = await createPeerConnection({
       'iceServers': [
         {'urls': 'stun:stun.l.google.com:19302'},
       ],
     });
 
-    _peerConnection!.onIceCandidate = (candidate) {
+    result.onIceCandidate = (candidate) {
       _candidates.add(candidate.toMap());
       print('ICE candidates: ${jsonEncode(_candidates)}');
     };
 
-    _peerConnection!.onDataChannel = (channel) {
+    result.onDataChannel = (channel) {
       _dataChannel = channel;
       channel.onMessage = (message) => _onReceive(message.text);
       channel.onDataChannelState = _onStateChanged;
     };
+
+    return result;
   }
 
-  /*Future _createOffer() async {
+  Future<Offer?> _getExistingOffer() async {
+    final QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('connections')
+        .where('status', isEqualTo: 'offered')
+        .limit(1)
+        .get();
+
+    if (snapshot.size == 1) {
+      return null; // snapshot.docs.first.data();
+    } else {
+      return null;
+    }
+  }
+
+  Future _createOffer() async {
     final RTCDataChannel channel = await _peerConnection!.createDataChannel(
       'chat',
       RTCDataChannelInit(),
     );
     _dataChannel = channel;
+    // TODO(momo): set callbacks?
 
-    final RTCSessionDescription offer = await _peerConnection!.createOffer();
-    await _peerConnection!.setLocalDescription(offer);
+    final RTCSessionDescription local = await _peerConnection!.createOffer();
+    await _peerConnection!.setLocalDescription(local);
 
-    sdpController.text = jsonEncode({
-      'sdp': offer.sdp,
-      'type': offer.type,
-    });
-  }*/
-
-  /*Future _createAnswer() async {
-    final dynamic data = jsonDecode(_sdpController.text);
-    final RTCSessionDescription offer = RTCSessionDescription(
-      data['sdp'],
-      data['type'],
+    final Offer offer = Offer(
+      sdp: local.sdp,
+      type: local.type,
     );
-    await _peerConnection!.setRemoteDescription(offer);
+    print(offer);
+  }
 
-    final RTCSessionDescription answer = await _peerConnection!.createAnswer();
-    await _peerConnection!.setLocalDescription(answer);
-
-    _sdpController.text = jsonEncode(answer.toMap());
-  }*/
-
-  /*Future _setRemoteDescription() async {
-    final dynamic data = jsonDecode(_sdpController.text);
-    final RTCSessionDescription answer = RTCSessionDescription(
-      data['sdp'],
-      data['type'],
+  Future _createAnswer(Offer offer) async {
+    final RTCSessionDescription remote = RTCSessionDescription(
+      offer.sdp,
+      offer.type,
     );
-    await _peerConnection!.setRemoteDescription(answer);
-  }*/
+    await _peerConnection!.setRemoteDescription(remote);
 
-  /*Future _addCandidate() async {
+    final RTCSessionDescription local = await _peerConnection!.createAnswer();
+    await _peerConnection!.setLocalDescription(local);
+
+    final Answer answer = Answer(
+      sdp: local.sdp,
+      type: local.type,
+    );
+    print(answer);
+  }
+
+  Future _setRemoteDescription(Answer answer) async {
+    final RTCSessionDescription remote = RTCSessionDescription(
+      answer.sdp,
+      answer.type,
+    );
+    await _peerConnection!.setRemoteDescription(remote);
+  }
+
+  Future _addCandidates() async {
     final List<dynamic> data = jsonDecode(_sdpController.text) as List<dynamic>;
 
     for (final dynamic element in data) {
@@ -80,7 +115,7 @@ class RtcState extends BaseState {
       );
       await _peerConnection!.addCandidate(candidate);
     }
-  }*/
+  }
 
   void onSend() {
     _dataChannel?.send(RTCDataChannelMessage('Hello from Dart!'));
