@@ -22,6 +22,10 @@ class RtcScreen extends StatelessWidget {
                 onPressed: state.onConnect,
                 child: const Text('Connect'),
               ),
+              ElevatedButton(
+                onPressed: state.isConnected ? state.sendMessage : null,
+                child: const Text('Send'),
+              ),
               Text('Received: ${state.received}'),
             ],
           ),

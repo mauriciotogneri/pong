@@ -8,6 +8,9 @@ class RtcState extends BaseState {
   String received = '';
   final List<dynamic> _candidates = [];
 
+  bool get isConnected =>
+      _dataChannel?.state == RTCDataChannelState.RTCDataChannelOpen;
+
   Future onConnect() async {
     _peerConnection = await createPeerConnection({
       'iceServers': [
@@ -95,7 +98,7 @@ class RtcState extends BaseState {
     }
   }*/
 
-  /*void _sendMessage() {
+  void sendMessage() {
     _dataChannel?.send(RTCDataChannelMessage('Hello from Dart!'));
-  }*/
+  }
 }
