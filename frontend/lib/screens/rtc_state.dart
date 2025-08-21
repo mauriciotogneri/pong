@@ -25,10 +25,8 @@ class RtcState extends BaseState {
 
     _peerConnection!.onDataChannel = (channel) {
       _dataChannel = channel;
-      channel.onMessage = (msg) {
-        received = msg.text;
-        notify();
-      };
+      channel.onMessage = (message) => _onReceive(message.text);
+      channel.onDataChannelState = _onStateChanged;
     };
 
     notify();
@@ -40,18 +38,6 @@ class RtcState extends BaseState {
       RTCDataChannelInit(),
     );
     _dataChannel = channel;
-
-    channel.onMessage = (msg) {
-      received = msg.text;
-      notify();
-    };
-
-    channel.onDataChannelState = (state) {
-      print('DataChannel state: $state');
-      if (state == RTCDataChannelState.RTCDataChannelOpen) {
-        notify();
-      }
-    };
 
     final RTCSessionDescription offer = await _peerConnection!.createOffer();
     await _peerConnection!.setLocalDescription(offer);
@@ -98,7 +84,18 @@ class RtcState extends BaseState {
     }
   }*/
 
-  void sendMessage() {
+  void onSend() {
     _dataChannel?.send(RTCDataChannelMessage('Hello from Dart!'));
+  }
+
+  void _onReceive(String message) {
+    print('Received message: $message');
+    received = message;
+    notify();
+  }
+
+  void _onStateChanged(RTCDataChannelState state) {
+    print('State changed: $state');
+    notify();
   }
 }
