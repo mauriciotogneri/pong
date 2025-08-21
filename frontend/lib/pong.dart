@@ -9,7 +9,7 @@ class Pong extends StatelessWidget {
     return const MaterialApp(
       title: 'Pong',
       debugShowCheckedModeBanner: false,
-      home: WebRTCExample(),
+      home: RtcScreen(),
     );
   }
 }

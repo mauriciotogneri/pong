@@ -2,14 +2,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
-class WebRTCExample extends StatefulWidget {
-  const WebRTCExample({super.key});
+class RtcScreen extends StatefulWidget {
+  const RtcScreen({super.key});
 
   @override
-  State<WebRTCExample> createState() => _WebRTCExampleState();
+  State<RtcScreen> createState() => _RtcScreenState();
 }
 
-class _WebRTCExampleState extends State<WebRTCExample> {
+class _RtcScreenState extends State<RtcScreen> {
   RTCPeerConnection? _peerConnection;
   RTCDataChannel? _dataChannel;
   String _received = '';
