@@ -7,6 +7,9 @@ environment:
   sdk: ">=3.9.0 <4.0.0"
 
 dependencies:
+  get_it: ^8.2.0
+  logger: ^2.6.1
+  dafluta: ^5.5.1
   flutter_webrtc: ^1.1.0
 
   firebase_core: ^4.0.0
