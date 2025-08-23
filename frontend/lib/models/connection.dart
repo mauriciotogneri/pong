@@ -30,13 +30,10 @@ class Connection {
   Future connect() async {
     _peerConnection = await _createConnection();
 
-    final Description? description = await Database.getExistingOffer();
-
-    if (description != null) {
-      await _createAnswer(description);
-    } else {
-      await _createOffer();
-    }
+    await Database.searchSession(
+      onAnswerNeeded: _onAnswerNeeded,
+      onOfferNeeded: _onOfferNeeded,
+    );
   }
 
   Future<RTCPeerConnection> _createConnection() async {
@@ -86,44 +83,6 @@ class Connection {
     return result;
   }
 
-  Future _createOffer() async {
-    final RTCDataChannel channel = await _peerConnection!.createDataChannel(
-      'connection',
-      RTCDataChannelInit(),
-    );
-    _dataChannel = channel;
-    // TODO(momo): set callbacks?
-    //_dataChannel!.onDataChannelState
-    //_dataChannel!.onMessage
-
-    final RTCSessionDescription local = await _peerConnection!.createOffer(
-      _sdpConstraints,
-    );
-    await _peerConnection!.setLocalDescription(local);
-
-    await Database.createSession(
-      description: Description.fromDescription(local),
-      onAnswered: _onOfferAnswered,
-    );
-  }
-
-  Future _createAnswer(Description description) async {
-    await _setRemoteDescription(description);
-
-    final RTCSessionDescription local = await _peerConnection!.createAnswer(
-      _sdpConstraints,
-    );
-    await _peerConnection!.setLocalDescription(local);
-
-    final Description answer = Description.fromDescription(local);
-    print(answer);
-  }
-
-  void _onOfferAnswered(Session session) {
-    _setRemoteDescription(session.callee!.description);
-    // TODO(momo): send candidates
-  }
-
   Future _setRemoteDescription(Description description) async {
     final RTCSessionDescription remote = RTCSessionDescription(
       description.sdp,
@@ -156,5 +115,45 @@ class Connection {
 
   void _onStateChanged(RTCDataChannelState state) {
     onLog('State changed: $state');
+  }
+
+  // ---------------------------------------------------------------------------
+
+  Future _onOfferNeeded() async {
+    final RTCDataChannel channel = await _peerConnection!.createDataChannel(
+      'connection',
+      RTCDataChannelInit(),
+    );
+    _dataChannel = channel;
+    // TODO(momo): set callbacks?
+    //_dataChannel!.onDataChannelState
+    //_dataChannel!.onMessage
+
+    final RTCSessionDescription local = await _peerConnection!.createOffer(
+      _sdpConstraints,
+    );
+    await _peerConnection!.setLocalDescription(local);
+
+    await Database.createSession(
+      description: Description.fromDescription(local),
+      onAnswered: _onOfferAnswered,
+    );
+  }
+
+  Future _onAnswerNeeded(Session session) async {
+    await _setRemoteDescription(session.caller!.description);
+
+    final RTCSessionDescription local = await _peerConnection!.createAnswer(
+      _sdpConstraints,
+    );
+    await _peerConnection!.setLocalDescription(local);
+
+    final Description answer = Description.fromDescription(local);
+    print(answer);
+  }
+
+  void _onOfferAnswered(Session session) {
+    _setRemoteDescription(session.callee!.description);
+    // TODO(momo): send candidates
   }
 }
