@@ -8,6 +8,7 @@ class RtcState extends BaseState {
 
   RtcState() {
     connection = Connection(
+      onConnected: _onConnected,
       onMessage: _onMessage,
       onLog: _onLog,
     );
@@ -19,6 +20,10 @@ class RtcState extends BaseState {
 
   Future onConnect() async {
     await connection.connect();
+    notify();
+  }
+
+  void _onConnected() {
     notify();
   }
 

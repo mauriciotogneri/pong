@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:pong/models/candidate.dart';
 import 'package:pong/models/database.dart';
@@ -10,10 +11,12 @@ class Connection {
   RTCPeerConnection? _peerConnection;
   RTCDataChannel? _dataChannel;
   final List<Candidate> _candidates = [];
+  final VoidCallback onConnected;
   final Function(String) onMessage;
   final Function(String) onLog;
 
   Connection({
+    required this.onConnected,
     required this.onMessage,
     required this.onLog,
   });
@@ -122,6 +125,10 @@ class Connection {
 
   void _onDataChannelStateChanged(RTCDataChannelState state) {
     //onLog('Data channel state changed: $state');
+
+    if (state == RTCDataChannelState.RTCDataChannelOpen) {
+      onConnected();
+    }
   }
 
   Future _onOfferNeeded() async {
