@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:pong/json/json_description.dart';
 import 'package:pong/json/json_session.dart';
 import 'package:pong/models/description.dart';
 import 'package:pong/models/session.dart';
@@ -42,7 +43,8 @@ class Database {
     );
 
     final Map<String, dynamic> data = session.toJson();
-    final DocumentReference reference = await collection.add(data);
+    final DocumentReference reference = collection.doc();
+    await reference.set(data);
 
     reference.snapshots().listen((snapshot) {
       if (snapshot.exists) {

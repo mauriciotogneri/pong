@@ -30,10 +30,14 @@ JsonSession _$JsonSessionFromJson(Map<String, dynamic> json) => JsonSession(
 Map<String, dynamic> _$JsonSessionToJson(JsonSession instance) =>
     <String, dynamic>{
       'createdAt': instance.createdAt.toIso8601String(),
-      'callerDescription': ?instance.callerDescription,
-      'calleeDescription': ?instance.calleeDescription,
-      'callerCandidates': ?instance.callerCandidates,
-      'calleeCandidates': ?instance.calleeCandidates,
+      'callerDescription': instance.callerDescription?.toJson(),
+      'calleeDescription': instance.calleeDescription?.toJson(),
+      'callerCandidates': instance.callerCandidates
+          ?.map((e) => e.toJson())
+          .toList(),
+      'calleeCandidates': instance.calleeCandidates
+          ?.map((e) => e.toJson())
+          .toList(),
       'status': _$SessionStatusEnumMap[instance.status]!,
     };
 
@@ -42,23 +46,3 @@ const _$SessionStatusEnumMap = {
   SessionStatus.answered: 'answered',
   SessionStatus.connected: 'connected',
 };
-
-JsonDescription _$JsonDescriptionFromJson(Map<String, dynamic> json) =>
-    JsonDescription(sdp: json['sdp'] as String?, type: json['type'] as String?);
-
-Map<String, dynamic> _$JsonDescriptionToJson(JsonDescription instance) =>
-    <String, dynamic>{'sdp': ?instance.sdp, 'type': ?instance.type};
-
-JsonCandidate _$JsonCandidateFromJson(Map<String, dynamic> json) =>
-    JsonCandidate(
-      candidate: json['candidate'] as String?,
-      sdpMid: json['sdpMid'] as String?,
-      sdpMLineIndex: (json['sdpMLineIndex'] as num?)?.toInt(),
-    );
-
-Map<String, dynamic> _$JsonCandidateToJson(JsonCandidate instance) =>
-    <String, dynamic>{
-      'candidate': ?instance.candidate,
-      'sdpMid': ?instance.sdpMid,
-      'sdpMLineIndex': ?instance.sdpMLineIndex,
-    };
