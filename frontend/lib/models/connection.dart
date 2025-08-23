@@ -77,10 +77,10 @@ class Connection {
     };
 
     result.onDataChannel = (channel) {
-      onLog('Data channel state created');
+      onLog('Data channel created');
       _dataChannel = channel;
       channel.onMessage = _onReceive;
-      channel.onDataChannelState = _onStateChanged;
+      channel.onDataChannelState = _onDataChannelStateChanged;
     };
 
     return result;
@@ -108,16 +108,16 @@ class Connection {
 
   void send(String message) {
     _dataChannel?.send(RTCDataChannelMessage(message));
-    onLog('>>>: $message');
+    onLog('>>> $message');
   }
 
   void _onReceive(RTCDataChannelMessage message) {
-    onLog('<<<: ${message.text}');
+    onLog('<<< ${message.text}');
     onMessage(message.text);
   }
 
-  void _onStateChanged(RTCDataChannelState state) {
-    onLog('State changed: $state');
+  void _onDataChannelStateChanged(RTCDataChannelState state) {
+    onLog('Data channel state changed: $state');
   }
 
   // ---------------------------------------------------------------------------
