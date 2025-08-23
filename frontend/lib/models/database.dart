@@ -1,19 +1,21 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pong/json/json_session.dart';
+import 'package:pong/models/candidate.dart';
 import 'package:pong/models/description.dart';
 import 'package:pong/models/session.dart';
+import 'package:pong/types/session_status.dart';
 
 class Database {
   static CollectionReference get collection =>
       FirebaseFirestore.instance.collection('connections');
 
   static Future searchSession({
-    required Function(Session) onAnswerNeeded,
     required Function() onOfferNeeded,
+    required Function(Session) onAnswerNeeded,
   }) async {
     final QuerySnapshot snapshot = await collection
-        .where('status', isEqualTo: 'offered')
+        .where('status', isEqualTo: SessionStatus.offered.name)
         .limit(1)
         .get();
 
@@ -52,7 +54,7 @@ class Database {
 
   static Future answerCreated({
     required Session session,
-    required Function(Session) onCallerCandidatesReady,
+    required Function(List<Candidate>) onCallerCandidatesReady,
   }) async {
     final JsonSession json = session.toJson();
     final DocumentReference reference = await collection.add(json.toJson());
@@ -64,7 +66,7 @@ class Database {
         final Session session = json.object;
 
         if (session.hasCallerCandidates) {
-          onCallerCandidatesReady(session);
+          onCallerCandidatesReady(session.caller!.candidates);
           subscription?.cancel();
         }
       }

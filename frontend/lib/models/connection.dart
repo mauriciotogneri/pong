@@ -32,8 +32,8 @@ class Connection {
     _peerConnection = await _createConnection();
 
     await Database.searchSession(
-      onAnswerNeeded: _onAnswerNeeded,
       onOfferNeeded: _onOfferNeeded,
+      onAnswerNeeded: _onAnswerNeeded,
     );
   }
 
@@ -158,7 +158,7 @@ class Connection {
 
     await Database.answerCreated(
       session: newSession,
-      onCallerCandidatesReady: _onCallerCandidatesReady,
+      onCallerCandidatesReady: _addCandidates,
     );
   }
 
@@ -173,7 +173,4 @@ class Connection {
       ),
     );
   }
-
-  void _onCallerCandidatesReady(Session session) =>
-      _addCandidates(session.caller!.candidates);
 }
