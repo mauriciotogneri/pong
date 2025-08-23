@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pong/json/json_session.dart';
 import 'package:pong/models/description.dart';
+import 'package:pong/models/session.dart';
 import 'package:pong/types/session_status.dart';
 
 class Database {
@@ -24,7 +25,10 @@ class Database {
     }
   }
 
-  static Future createSession(Description description) async {
+  static Future createSession({
+    required Description description,
+    required Function(Session) onAnswered,
+  }) async {
     final JsonSession session = JsonSession(
       createdAt: DateTime.now(),
       callerDescription: JsonDescription(
@@ -45,7 +49,7 @@ class Database {
 
         if (updated.calleeDescription != null &&
             updated.status == SessionStatus.answered) {
-          print('Received answer: ${updated.calleeDescription}');
+          onAnswered(updated.object);
         }
       }
     });

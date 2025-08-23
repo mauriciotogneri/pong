@@ -2,6 +2,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:pong/models/candidate.dart';
 import 'package:pong/models/database.dart';
 import 'package:pong/models/description.dart';
+import 'package:pong/models/session.dart';
 
 class Connection {
   RTCPeerConnection? _peerConnection;
@@ -100,7 +101,10 @@ class Connection {
     );
     await _peerConnection!.setLocalDescription(local);
 
-    await Database.createSession(Description.fromDescription(local));
+    await Database.createSession(
+      description: Description.fromDescription(local),
+      onAnswered: _onOfferAnswered,
+    );
   }
 
   Future _createAnswer(Description description) async {
@@ -113,6 +117,11 @@ class Connection {
 
     final Description answer = Description.fromDescription(local);
     print(answer);
+  }
+
+  void _onOfferAnswered(Session session) {
+    _setRemoteDescription(session.calleeDescription!);
+    // TODO(momo): send candidates
   }
 
   Future _setRemoteDescription(Description description) async {
