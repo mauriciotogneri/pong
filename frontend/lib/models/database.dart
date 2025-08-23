@@ -19,4 +19,12 @@ class Database {
       return null;
     }
   }
+
+  static Future createOffer(Description description) =>
+      FirebaseFirestore.instance.collection('connections').add({
+        'sdp': description.sdp,
+        'type': description.type,
+        'status': 'offered',
+        'timestamp': FieldValue.serverTimestamp(),
+      });
 }
