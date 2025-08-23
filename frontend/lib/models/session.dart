@@ -16,6 +16,11 @@ class Session {
     required this.status,
   });
 
+  bool get isAnswered => (callee != null) && (status == SessionStatus.answered);
+
+  bool get hasCallerCandidates =>
+      (caller != null) && (caller!.candidates.isNotEmpty);
+
   Session withCaller(Peer caller) => Session(
     createdAt: createdAt,
     caller: caller,

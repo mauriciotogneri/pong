@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pong/json/json_session.dart';
 import 'package:pong/models/description.dart';
 import 'package:pong/models/session.dart';
-import 'package:pong/types/session_status.dart';
 
 class Database {
   static CollectionReference get collection =>
@@ -40,11 +39,11 @@ class Database {
     StreamSubscription? subscription;
     subscription = reference.snapshots().listen((snapshot) {
       if (snapshot.exists) {
-        final JsonSession updated = JsonSession.fromDocumentSnapshot(snapshot);
+        final JsonSession json = JsonSession.fromDocumentSnapshot(snapshot);
+        final Session session = json.object;
 
-        if (updated.callee != null &&
-            updated.status == SessionStatus.answered) {
-          onAnswered(updated.object);
+        if (session.isAnswered) {
+          onAnswered(session);
           subscription?.cancel();
         }
       }
@@ -61,11 +60,11 @@ class Database {
     StreamSubscription? subscription;
     subscription = reference.snapshots().listen((snapshot) {
       if (snapshot.exists) {
-        final JsonSession updated = JsonSession.fromDocumentSnapshot(snapshot);
+        final JsonSession json = JsonSession.fromDocumentSnapshot(snapshot);
+        final Session session = json.object;
 
-        if (updated.callee?.description != null &&
-            updated.status == SessionStatus.answered) {
-          onAnswered(updated.object);
+        if (session.hasCallerCandidates) {
+          onAnswered(session);
           subscription?.cancel();
         }
       }
