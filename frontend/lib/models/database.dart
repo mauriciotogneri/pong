@@ -59,9 +59,7 @@ class Database {
     final DocumentReference reference = await collection.add(json.toJson());
 
     StreamSubscription? subscription;
-    subscription = reference.snapshots().listen((
-      snapshot,
-    ) {
+    subscription = reference.snapshots().listen((snapshot) {
       if (snapshot.exists) {
         final JsonSession updated = JsonSession.fromDocumentSnapshot(snapshot);
 
