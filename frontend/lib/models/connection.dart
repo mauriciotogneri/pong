@@ -18,6 +18,14 @@ class Connection {
   bool get isConnected =>
       _dataChannel?.state == RTCDataChannelState.RTCDataChannelOpen;
 
+  Map<String, dynamic> get _sdpConstraints => {
+    'mandatory': {
+      'OfferToReceiveAudio': false,
+      'OfferToReceiveVideo': false,
+    },
+    'optional': [],
+  };
+
   Future connect() async {
     _peerConnection = await _createConnection();
 
@@ -30,14 +38,6 @@ class Connection {
     }
   }
 
-  final Map<String, dynamic> _sdpConstraints = {
-    'mandatory': {
-      'OfferToReceiveAudio': false,
-      'OfferToReceiveVideo': false,
-    },
-    'optional': [],
-  };
-
   Future<RTCPeerConnection> _createConnection() async {
     final RTCPeerConnection result = await createPeerConnection({
       'iceServers': [
@@ -49,6 +49,7 @@ class Connection {
 
     result.onIceCandidate = (candidate) {
       // TODO(momo): new candidates must be sent to the peer if they change during the connection
+      onLog('New ICE candidate: ${candidate.toMap()}');
       _candidates.add(
         Candidate(
           candidate: candidate.candidate,
@@ -75,6 +76,7 @@ class Connection {
     };
 
     result.onDataChannel = (channel) {
+      onLog('Data channel state created');
       _dataChannel = channel;
       channel.onMessage = _onReceive;
       channel.onDataChannelState = _onStateChanged;
