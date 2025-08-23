@@ -44,7 +44,7 @@ class Database {
 
   static Future createOffer({
     required Description description,
-    required Function(Session) onAnswered,
+    required Function(Session) onAnswerReady,
     required Function(List<Candidate>) onCandidatesReady,
   }) async {
     final Session session = Session.create(description);
@@ -58,7 +58,7 @@ class Database {
         final Session session = json.object;
 
         if (session.isAnswered) {
-          onAnswered(session);
+          onAnswerReady(session);
         } else if (session.hasCalleeCandidates) {
           onCandidatesReady(session.callee!.candidates);
           subscription?.cancel();
@@ -67,10 +67,8 @@ class Database {
     });
   }
 
-  static Future createAnswer({
-    required Session session,
-  }) async {
+  static Future createAnswer(Session session) async {
     final JsonSession json = session.toJson();
-    final DocumentReference reference = await collection.add(json.toJson());
+    await collection.add(json.toJson());
   }
 }

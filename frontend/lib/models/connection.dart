@@ -137,7 +137,7 @@ class Connection {
 
     await Database.createOffer(
       description: Description.fromDescription(local),
-      onAnswered: _onOfferAnswered,
+      onAnswerReady: _onAnswerReady,
       onCandidatesReady: _addCandidates,
     );
   }
@@ -157,10 +157,10 @@ class Connection {
       ),
     );
 
-    await Database.createAnswer(session: newSession);
+    await Database.createAnswer(newSession);
   }
 
-  void _onOfferAnswered(Session session) {
+  void _onAnswerReady(Session session) {
     _setRemoteDescription(session.callee!.description);
     // TODO(momo): send candidates
 
