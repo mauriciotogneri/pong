@@ -49,15 +49,14 @@ class Database {
     );
 
     final Map<String, dynamic> data = session.toJson();
-    final DocumentReference reference = collection.doc();
-    await reference.set(data);
+    final DocumentReference reference = await collection.add(data);
 
     StreamSubscription? subscription;
     subscription = reference.snapshots().listen((snapshot) {
       if (snapshot.exists) {
         final JsonSession updated = JsonSession.fromDocumentSnapshot(snapshot);
 
-        if (updated.callee?.description != null &&
+        if (updated.callee != null &&
             updated.status == SessionStatus.answered) {
           onAnswered(updated.object);
           subscription?.cancel();
@@ -66,26 +65,31 @@ class Database {
     });
   }
 
-  static Future answerOffer({
-    required Description description,
+  static Future answerCreated({
+    required Session session,
     required Function(Session) onAnswered,
   }) async {
-    final JsonSession session = JsonSession(
-      createdAt: DateTime.now(),
+    final JsonSession json = JsonSession(
+      createdAt: session.createdAt,
       caller: JsonPeer(
         description: JsonDescription(
-          sdp: description.sdp,
-          type: description.type,
+          sdp: session.caller!.description.sdp,
+          type: session.caller!.description.type,
         ),
         candidates: [],
       ),
-      callee: null,
-      status: SessionStatus.offered,
+      callee: JsonPeer(
+        description: JsonDescription(
+          sdp: session.callee!.description.sdp,
+          type: session.callee!.description.type,
+        ),
+        candidates: [],
+      ),
+      status: SessionStatus.answered,
     );
 
-    final Map<String, dynamic> data = session.toJson();
-    final DocumentReference reference = collection.doc();
-    await reference.set(data);
+    final Map<String, dynamic> data = json.toJson();
+    final DocumentReference reference = await collection.add(data);
 
     StreamSubscription? subscription;
     subscription = reference.snapshots().listen((

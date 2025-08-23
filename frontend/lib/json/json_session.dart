@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:pong/json/json_candidate.dart';
-import 'package:pong/json/json_description.dart';
 import 'package:pong/json/json_peer.dart';
 import 'package:pong/models/session.dart';
 import 'package:pong/types/session_status.dart';
@@ -30,6 +28,7 @@ class JsonSession {
   });
 
   Session get object => Session(
+    createdAt: createdAt,
     caller: caller?.object,
     callee: callee?.object,
     status: status,

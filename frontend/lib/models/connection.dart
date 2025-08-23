@@ -2,6 +2,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:pong/models/candidate.dart';
 import 'package:pong/models/database.dart';
 import 'package:pong/models/description.dart';
+import 'package:pong/models/peer.dart';
 import 'package:pong/models/session.dart';
 
 class Connection {
@@ -148,8 +149,17 @@ class Connection {
     );
     await _peerConnection!.setLocalDescription(local);
 
-    final Description answer = Description.fromDescription(local);
-    print(answer);
+    final Session newSession = session.withCalee(
+      Peer(
+        description: Description.fromDescription(local),
+        candidates: [],
+      ),
+    );
+
+    await Database.answerCreated(
+      session: newSession,
+      onAnswered: (s) {},
+    );
   }
 
   void _onOfferAnswered(Session session) {
