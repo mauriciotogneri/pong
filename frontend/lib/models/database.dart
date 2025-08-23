@@ -52,7 +52,7 @@ class Database {
 
   static Future answerCreated({
     required Session session,
-    required Function(Session) onAnswered,
+    required Function(Session) onCallerCandidatesReady,
   }) async {
     final JsonSession json = session.toJson();
     final DocumentReference reference = await collection.add(json.toJson());
@@ -64,7 +64,7 @@ class Database {
         final Session session = json.object;
 
         if (session.hasCallerCandidates) {
-          onAnswered(session);
+          onCallerCandidatesReady(session);
           subscription?.cancel();
         }
       }

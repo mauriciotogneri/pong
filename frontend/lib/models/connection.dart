@@ -158,7 +158,7 @@ class Connection {
 
     await Database.answerCreated(
       session: newSession,
-      onAnswered: (s) {},
+      onCallerCandidatesReady: _onCallerCandidatesReady,
     );
   }
 
@@ -173,4 +173,7 @@ class Connection {
       ),
     );
   }
+
+  void _onCallerCandidatesReady(Session session) =>
+      _addCandidates(session.caller!.candidates);
 }
