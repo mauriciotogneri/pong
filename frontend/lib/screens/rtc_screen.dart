@@ -17,30 +17,38 @@ class RtcScreen extends StatelessWidget {
         builder: (context, state) => Padding(
           padding: const EdgeInsets.all(10),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               ElevatedButton(
                 onPressed: state.onConnect,
                 child: const Text('Connect'),
               ),
+              const VBox(10),
               ElevatedButton(
                 onPressed: state.isConnected ? state.onSend : null,
                 child: const Text('Send'),
               ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black, width: 1),
-                  borderRadius: BorderRadius.circular(4),
+              const VBox(10),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black, width: 1),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(state.received),
                 ),
-                child: Text(state.received),
               ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black, width: 1),
-                  borderRadius: BorderRadius.circular(4),
+              const VBox(10),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black, width: 1),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(state.log),
                 ),
-                child: Text(state.log),
               ),
             ],
           ),
