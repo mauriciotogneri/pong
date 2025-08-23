@@ -36,59 +36,11 @@ class RtcScreen extends StatelessWidget {
                     border: Border.all(color: Colors.black, width: 1),
                     borderRadius: BorderRadius.circular(4),
                   ),
-                  child: Text(state.received),
-                ),
-              ),
-              const VBox(10),
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black, width: 1),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
                   child: Text(state.log),
                 ),
               ),
             ],
           ),
-          /*Column(
-            children: [
-              ElevatedButton(
-                onPressed: _createOffer,
-                child: const Text('Create Offer'),
-              ),
-              ElevatedButton(
-                onPressed: _createAnswer,
-                child: const Text('Create Answer'),
-              ),
-              ElevatedButton(
-                onPressed: _addCandidate,
-                child: const Text('Add Candidates'),
-              ),
-              ElevatedButton(
-                onPressed: _setRemoteDescription,
-                child: const Text('Set Remote Description'),
-              ),
-              TextField(
-                controller: _sdpController,
-                maxLines: 8,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Paste here',
-                ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed:
-                    _dataChannel?.state == RTCDataChannelState.RTCDataChannelOpen
-                    ? _sendMessage
-                    : null,
-                child: const Text('Send Message'),
-              ),
-              Text('Received: $_received'),
-            ],
-          ),*/
         ),
       ),
     );

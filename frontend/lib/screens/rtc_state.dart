@@ -2,7 +2,6 @@ import 'package:dafluta/dafluta.dart';
 import 'package:pong/models/connection.dart';
 
 class RtcState extends BaseState {
-  String received = '';
   String log = '';
   late final Connection connection;
 
@@ -19,10 +18,7 @@ class RtcState extends BaseState {
 
   void onSend() => connection.send('Hello!');
 
-  void _onMessage(String message) {
-    received = message;
-    notify();
-  }
+  void _onMessage(String message) {}
 
   void _onLog(String message) {
     log += '$message\n';

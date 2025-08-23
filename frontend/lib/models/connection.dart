@@ -123,6 +123,8 @@ class Connection {
   // ---------------------------------------------------------------------------
 
   Future _onOfferNeeded() async {
+    onLog('Creating offer...');
+
     final RTCDataChannel channel = await _peerConnection!.createDataChannel(
       'connection',
       RTCDataChannelInit(),
@@ -145,6 +147,8 @@ class Connection {
   }
 
   Future _onAnswerNeeded(Session session) async {
+    onLog('Creating answer...');
+
     await _setRemoteDescription(session.caller!.description);
 
     final RTCSessionDescription local = await _peerConnection!.createAnswer(
