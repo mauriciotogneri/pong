@@ -20,7 +20,7 @@ class RtcScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               ElevatedButton(
-                onPressed: state.onConnect,
+                onPressed: state.isConnected ? null : state.onConnect,
                 child: const Text('Connect'),
               ),
               const VBox(10),
