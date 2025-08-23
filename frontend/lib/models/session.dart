@@ -1,3 +1,5 @@
+import 'package:pong/json/json_session.dart';
+import 'package:pong/models/description.dart';
 import 'package:pong/models/peer.dart';
 import 'package:pong/types/session_status.dart';
 
@@ -14,10 +16,34 @@ class Session {
     required this.status,
   });
 
+  Session withCaller(Peer caller) => Session(
+    createdAt: createdAt,
+    caller: caller,
+    callee: callee,
+    status: status,
+  );
+
   Session withCalee(Peer callee) => Session(
     createdAt: createdAt,
     caller: caller,
     callee: callee,
     status: status,
+  );
+
+  JsonSession toJson() => JsonSession(
+    createdAt: createdAt,
+    caller: caller?.toJson(),
+    callee: callee?.toJson(),
+    status: status,
+  );
+
+  factory Session.create(Description description) => Session(
+    createdAt: DateTime.now(),
+    caller: Peer(
+      description: description,
+      candidates: [],
+    ),
+    callee: null,
+    status: SessionStatus.offered,
   );
 }

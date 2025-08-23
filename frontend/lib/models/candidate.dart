@@ -1,3 +1,5 @@
+import 'package:pong/json/json_candidate.dart';
+
 class Candidate {
   final String? candidate;
   final String? sdpMid;
@@ -8,4 +10,10 @@ class Candidate {
     this.sdpMid,
     this.sdpMLineIndex,
   });
+
+  JsonCandidate toJson() => JsonCandidate(
+    candidate: candidate,
+    sdpMid: sdpMid,
+    sdpMLineIndex: sdpMLineIndex,
+  );
 }

@@ -1,4 +1,5 @@
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:pong/json/json_description.dart';
 
 class Description {
   final String? sdp;
@@ -17,4 +18,9 @@ class Description {
       type: description.type,
     );
   }
+
+  JsonDescription toJson() => JsonDescription(
+    sdp: sdp,
+    type: type,
+  );
 }

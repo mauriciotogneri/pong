@@ -165,5 +165,12 @@ class Connection {
   void _onOfferAnswered(Session session) {
     _setRemoteDescription(session.callee!.description);
     // TODO(momo): send candidates
+
+    final Session newSession = session.withCaller(
+      Peer(
+        description: session.caller!.description,
+        candidates: _candidates,
+      ),
+    );
   }
 }

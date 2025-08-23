@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:pong/json/json_description.dart';
-import 'package:pong/json/json_peer.dart';
 import 'package:pong/json/json_session.dart';
 import 'package:pong/models/description.dart';
 import 'package:pong/models/session.dart';
@@ -35,21 +33,9 @@ class Database {
     required Description description,
     required Function(Session) onAnswered,
   }) async {
-    final JsonSession session = JsonSession(
-      createdAt: DateTime.now(),
-      caller: JsonPeer(
-        description: JsonDescription(
-          sdp: description.sdp,
-          type: description.type,
-        ),
-        candidates: [],
-      ),
-      callee: null,
-      status: SessionStatus.offered,
-    );
-
-    final Map<String, dynamic> data = session.toJson();
-    final DocumentReference reference = await collection.add(data);
+    final Session session = Session.create(description);
+    final JsonSession json = session.toJson();
+    final DocumentReference reference = await collection.add(json.toJson());
 
     StreamSubscription? subscription;
     subscription = reference.snapshots().listen((snapshot) {
@@ -69,27 +55,8 @@ class Database {
     required Session session,
     required Function(Session) onAnswered,
   }) async {
-    final JsonSession json = JsonSession(
-      createdAt: session.createdAt,
-      caller: JsonPeer(
-        description: JsonDescription(
-          sdp: session.caller!.description.sdp,
-          type: session.caller!.description.type,
-        ),
-        candidates: [],
-      ),
-      callee: JsonPeer(
-        description: JsonDescription(
-          sdp: session.callee!.description.sdp,
-          type: session.callee!.description.type,
-        ),
-        candidates: [],
-      ),
-      status: SessionStatus.answered,
-    );
-
-    final Map<String, dynamic> data = json.toJson();
-    final DocumentReference reference = await collection.add(data);
+    final JsonSession json = session.toJson();
+    final DocumentReference reference = await collection.add(json.toJson());
 
     StreamSubscription? subscription;
     subscription = reference.snapshots().listen((
