@@ -50,7 +50,7 @@ class Connection {
 
     result.onIceCandidate = (candidate) {
       // TODO(momo): new candidates must be sent to the peer if they change during the connection
-      onLog('New ICE candidate: ${candidate.toMap()}');
+      //onLog('New ICE candidate: ${candidate.toMap()}');
       _candidates.add(
         Candidate(
           candidate: candidate.candidate,
@@ -61,11 +61,11 @@ class Connection {
     };
 
     result.onIceConnectionState = (state) {
-      onLog('ICE connection state changed: $state');
+      //onLog('ICE connection state changed: $state');
     };
 
     result.onIceGatheringState = (state) {
-      onLog('ICE gathering state changed: $state');
+      //onLog('ICE gathering state changed: $state');
     };
 
     result.onConnectionState = (state) {
@@ -73,7 +73,7 @@ class Connection {
     };
 
     result.onSignalingState = (state) {
-      onLog('Signaling state changed: $state');
+      //onLog('Signaling state changed: $state');
     };
 
     result.onDataChannel = _onDataChannelCreated;
@@ -107,7 +107,7 @@ class Connection {
   }
 
   void _onDataChannelCreated(RTCDataChannel channel) {
-    onLog('Data channel created');
+    //onLog('Data channel created');
     _dataChannel = channel;
     _dataChannel!.onMessage = _onReceive;
     _dataChannel!.onDataChannelState = _onDataChannelStateChanged;
@@ -119,10 +119,8 @@ class Connection {
   }
 
   void _onDataChannelStateChanged(RTCDataChannelState state) {
-    onLog('Data channel state changed: $state');
+    //onLog('Data channel state changed: $state');
   }
-
-  // ---------------------------------------------------------------------------
 
   Future _onOfferNeeded() async {
     onLog('Creating offer...');
