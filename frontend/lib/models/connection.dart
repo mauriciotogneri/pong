@@ -59,16 +59,16 @@ class Connection {
       );
     };
 
-    result.onConnectionState = (state) {
-      onLog('Connection state changed: $state');
-    };
-
     result.onIceConnectionState = (state) {
       onLog('ICE connection state changed: $state');
     };
 
     result.onIceGatheringState = (state) {
       onLog('ICE gathering state changed: $state');
+    };
+
+    result.onConnectionState = (state) {
+      onLog('Connection state changed: $state');
     };
 
     result.onSignalingState = (state) {
@@ -105,11 +105,13 @@ class Connection {
 
   Future _createOffer() async {
     final RTCDataChannel channel = await _peerConnection!.createDataChannel(
-      'chat',
+      'connection',
       RTCDataChannelInit(),
     );
     _dataChannel = channel;
     // TODO(momo): set callbacks?
+    //_dataChannel!.onDataChannelState
+    //_dataChannel!.onMessage
 
     final RTCSessionDescription local = await _peerConnection!.createOffer(
       _sdpConstraints,
