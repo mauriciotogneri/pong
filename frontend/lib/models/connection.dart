@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:pong/models/candidate.dart';
+import 'package:pong/models/database.dart';
 import 'package:pong/models/description.dart';
 
 class Connection {
@@ -29,7 +29,7 @@ class Connection {
   Future connect() async {
     _peerConnection = await _createConnection();
 
-    final Description? description = await _getExistingOffer();
+    final Description? description = await Database.getExistingOffer();
 
     if (description != null) {
       await _createAnswer(description);
@@ -83,24 +83,6 @@ class Connection {
     };
 
     return result;
-  }
-
-  Future<Description?> _getExistingOffer() async {
-    final QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('connections')
-        .where('status', isEqualTo: 'offered')
-        .limit(1)
-        .get();
-
-    if (snapshot.size == 1) {
-      // TODO(momo): read snapshot
-      return const Description(
-        sdp: '',
-        type: '',
-      );
-    } else {
-      return null;
-    }
   }
 
   Future _createOffer() async {
