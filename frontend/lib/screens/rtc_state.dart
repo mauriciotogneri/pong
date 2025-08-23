@@ -13,9 +13,14 @@ class RtcState extends BaseState {
     );
   }
 
+  bool get isDisconnected => connection.isDisconnected;
+
   bool get isConnected => connection.isConnected;
 
-  Future onConnect() => connection.connect();
+  Future onConnect() async {
+    await connection.connect();
+    notify();
+  }
 
   void onSend() {
     messageSent = DateTime.now();

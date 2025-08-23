@@ -20,7 +20,7 @@ class RtcScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               ElevatedButton(
-                onPressed: state.isConnected ? null : state.onConnect,
+                onPressed: state.isDisconnected ? state.onConnect : null,
                 child: const Text('Connect'),
               ),
               const VBox(10),
@@ -36,7 +36,14 @@ class RtcScreen extends StatelessWidget {
                     border: Border.all(color: Colors.black, width: 1),
                     borderRadius: BorderRadius.circular(4),
                   ),
-                  child: Text(state.log),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(state.log),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ],

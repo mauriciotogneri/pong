@@ -18,6 +18,8 @@ class Connection {
     required this.onLog,
   });
 
+  bool get isDisconnected => _peerConnection == null;
+
   bool get isConnected =>
       _dataChannel?.state == RTCDataChannelState.RTCDataChannelOpen;
 
