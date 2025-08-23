@@ -42,7 +42,7 @@ class Session {
     status: status,
   );
 
-  Session withCalee(Peer callee) => Session(
+  Session withCallee(Peer callee) => Session(
     id: id,
     createdAt: createdAt,
     caller: caller,

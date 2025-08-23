@@ -34,7 +34,7 @@ class Connection {
     await Database.searchSession(
       onOfferNeeded: _onOfferNeeded,
       onAnswerNeeded: _onAnswerNeeded,
-      onCandidatesReady: _addCandidates,
+      onCallerCandidatesReady: _onCallerCandidatesReady,
     );
   }
 
@@ -139,7 +139,7 @@ class Connection {
     await Database.createOffer(
       session: Session.create(Description.fromDescription(local)),
       onAnswerReady: _onAnswerReady,
-      onCandidatesReady: _addCandidates,
+      onCalleeCandidatesReady: _onCalleeCandidatesReady,
     );
   }
 
@@ -151,7 +151,7 @@ class Connection {
     );
     await _peerConnection!.setLocalDescription(local);
 
-    final Session newSession = session.withCalee(
+    final Session newSession = session.withCallee(
       Peer(
         description: Description.fromDescription(local),
         candidates: [],
@@ -173,4 +173,19 @@ class Connection {
     );
     await Database.updateSession(newSession);
   }
+
+  Future _onCallerCandidatesReady(Session session) async {
+    await _addCandidates(session.caller!.candidates);
+
+    final Session newSession = session.withCallee(
+      Peer(
+        description: session.callee!.description,
+        candidates: _candidates,
+      ),
+    );
+    await Database.updateSession(newSession);
+  }
+
+  Future _onCalleeCandidatesReady(Session session) =>
+      _addCandidates(session.callee!.candidates);
 }

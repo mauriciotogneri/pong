@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pong/json/json_session.dart';
-import 'package:pong/models/candidate.dart';
 import 'package:pong/models/session.dart';
 import 'package:pong/types/session_status.dart';
 
@@ -12,7 +11,7 @@ class Database {
   static Future searchSession({
     required Function() onOfferNeeded,
     required Function(Session) onAnswerNeeded,
-    required Function(List<Candidate>) onCandidatesReady,
+    required Function(Session session) onCallerCandidatesReady,
   }) async {
     final QuerySnapshot snapshot = await collection
         .where('status', isEqualTo: SessionStatus.offered.name)
@@ -31,7 +30,7 @@ class Database {
           final Session session = json.object;
 
           if (session.hasCallerCandidates) {
-            onCandidatesReady(session.caller!.candidates);
+            onCallerCandidatesReady(session);
             subscription?.cancel();
           }
         }
@@ -44,7 +43,7 @@ class Database {
   static Future createOffer({
     required Session session,
     required Function(Session) onAnswerReady,
-    required Function(List<Candidate>) onCandidatesReady,
+    required Function(Session) onCalleeCandidatesReady,
   }) async {
     final DocumentReference doc = collection.doc();
     final JsonSession json = session.withId(doc.id).toJson();
@@ -59,7 +58,7 @@ class Database {
         if (session.isAnswered) {
           onAnswerReady(session);
         } else if (session.hasCalleeCandidates) {
-          onCandidatesReady(session.callee!.candidates);
+          onCalleeCandidatesReady(session);
           subscription?.cancel();
         }
       }
