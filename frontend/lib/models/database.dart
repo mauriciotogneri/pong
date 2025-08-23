@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pong/json/json_description.dart';
+import 'package:pong/json/json_peer.dart';
 import 'package:pong/json/json_session.dart';
 import 'package:pong/models/description.dart';
 import 'package:pong/models/session.dart';
@@ -20,7 +21,7 @@ class Database {
         snapshot.docs.first,
       );
 
-      return json.object.callerDescription;
+      return json.object.caller!.description;
     } else {
       return null;
     }
@@ -32,13 +33,14 @@ class Database {
   }) async {
     final JsonSession session = JsonSession(
       createdAt: DateTime.now(),
-      callerDescription: JsonDescription(
-        sdp: description.sdp,
-        type: description.type,
+      caller: JsonPeer(
+        description: JsonDescription(
+          sdp: description.sdp,
+          type: description.type,
+        ),
+        candidates: [],
       ),
-      calleeDescription: null,
-      callerCandidates: [],
-      calleeCandidates: [],
+      callee: null,
       status: SessionStatus.offered,
     );
 
@@ -50,7 +52,7 @@ class Database {
       if (snapshot.exists) {
         final JsonSession updated = JsonSession.fromDocumentSnapshot(snapshot);
 
-        if (updated.calleeDescription != null &&
+        if (updated.callee?.description != null &&
             updated.status == SessionStatus.answered) {
           onAnswered(updated.object);
         }

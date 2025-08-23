@@ -8,36 +8,20 @@ part of 'json_session.dart';
 
 JsonSession _$JsonSessionFromJson(Map<String, dynamic> json) => JsonSession(
   createdAt: DateTime.parse(json['createdAt'] as String),
-  callerDescription: json['callerDescription'] == null
+  caller: json['caller'] == null
       ? null
-      : JsonDescription.fromJson(
-          json['callerDescription'] as Map<String, dynamic>,
-        ),
-  calleeDescription: json['calleeDescription'] == null
+      : JsonPeer.fromJson(json['caller'] as Map<String, dynamic>),
+  callee: json['callee'] == null
       ? null
-      : JsonDescription.fromJson(
-          json['calleeDescription'] as Map<String, dynamic>,
-        ),
-  callerCandidates: (json['callerCandidates'] as List<dynamic>?)
-      ?.map((e) => JsonCandidate.fromJson(e as Map<String, dynamic>))
-      .toList(),
-  calleeCandidates: (json['calleeCandidates'] as List<dynamic>?)
-      ?.map((e) => JsonCandidate.fromJson(e as Map<String, dynamic>))
-      .toList(),
+      : JsonPeer.fromJson(json['callee'] as Map<String, dynamic>),
   status: $enumDecode(_$SessionStatusEnumMap, json['status']),
 );
 
 Map<String, dynamic> _$JsonSessionToJson(JsonSession instance) =>
     <String, dynamic>{
       'createdAt': instance.createdAt.toIso8601String(),
-      'callerDescription': instance.callerDescription?.toJson(),
-      'calleeDescription': instance.calleeDescription?.toJson(),
-      'callerCandidates': instance.callerCandidates
-          ?.map((e) => e.toJson())
-          .toList(),
-      'calleeCandidates': instance.calleeCandidates
-          ?.map((e) => e.toJson())
-          .toList(),
+      'caller': instance.caller?.toJson(),
+      'callee': instance.callee?.toJson(),
       'status': _$SessionStatusEnumMap[instance.status]!,
     };
 

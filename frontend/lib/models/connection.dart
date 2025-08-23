@@ -120,7 +120,7 @@ class Connection {
   }
 
   void _onOfferAnswered(Session session) {
-    _setRemoteDescription(session.calleeDescription!);
+    _setRemoteDescription(session.callee!.description);
     // TODO(momo): send candidates
   }
 
