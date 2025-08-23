@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pong/json/json_description.dart';
 import 'package:pong/json/json_peer.dart';
@@ -30,7 +31,7 @@ class Database {
     }
   }
 
-  static Future createSession({
+  static Future offerCreated({
     required Description description,
     required Function(Session) onAnswered,
   }) async {
@@ -51,13 +52,17 @@ class Database {
     final DocumentReference reference = collection.doc();
     await reference.set(data);
 
-    reference.snapshots().listen((snapshot) {
+    StreamSubscription? subscription;
+    subscription = reference.snapshots().listen((
+      snapshot,
+    ) {
       if (snapshot.exists) {
         final JsonSession updated = JsonSession.fromDocumentSnapshot(snapshot);
 
         if (updated.callee?.description != null &&
             updated.status == SessionStatus.answered) {
           onAnswered(updated.object);
+          subscription?.cancel();
         }
       }
     });
@@ -84,13 +89,17 @@ class Database {
     final DocumentReference reference = collection.doc();
     await reference.set(data);
 
-    reference.snapshots().listen((snapshot) {
+    StreamSubscription? subscription;
+    subscription = reference.snapshots().listen((
+      snapshot,
+    ) {
       if (snapshot.exists) {
         final JsonSession updated = JsonSession.fromDocumentSnapshot(snapshot);
 
         if (updated.callee?.description != null &&
             updated.status == SessionStatus.answered) {
           onAnswered(updated.object);
+          subscription?.cancel();
         }
       }
     });

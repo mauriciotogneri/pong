@@ -134,7 +134,7 @@ class Connection {
     );
     await _peerConnection!.setLocalDescription(local);
 
-    await Database.createSession(
+    await Database.offerCreated(
       description: Description.fromDescription(local),
       onAnswered: _onOfferAnswered,
     );
