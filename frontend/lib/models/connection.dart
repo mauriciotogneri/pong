@@ -76,12 +76,7 @@ class Connection {
       onLog('Signaling state changed: $state');
     };
 
-    result.onDataChannel = (channel) {
-      onLog('Data channel created');
-      _dataChannel = channel;
-      channel.onMessage = _onReceive;
-      channel.onDataChannelState = _onDataChannelStateChanged;
-    };
+    result.onDataChannel = _onDataChannelCreated;
 
     return result;
   }
@@ -111,6 +106,13 @@ class Connection {
     onLog('>>> $message');
   }
 
+  void _onDataChannelCreated(RTCDataChannel channel) {
+    onLog('Data channel created');
+    _dataChannel = channel;
+    _dataChannel!.onMessage = _onReceive;
+    _dataChannel!.onDataChannelState = _onDataChannelStateChanged;
+  }
+
   void _onReceive(RTCDataChannelMessage message) {
     onLog('<<< ${message.text}');
     onMessage(message.text);
@@ -129,10 +131,7 @@ class Connection {
       'connection',
       RTCDataChannelInit(),
     );
-    _dataChannel = channel;
-    // TODO(momo): set callbacks?
-    //_dataChannel!.onDataChannelState
-    //_dataChannel!.onMessage
+    _onDataChannelCreated(channel);
 
     final RTCSessionDescription local = await _peerConnection!.createOffer(
       _sdpConstraints,
