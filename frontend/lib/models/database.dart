@@ -53,9 +53,7 @@ class Database {
     await reference.set(data);
 
     StreamSubscription? subscription;
-    subscription = reference.snapshots().listen((
-      snapshot,
-    ) {
+    subscription = reference.snapshots().listen((snapshot) {
       if (snapshot.exists) {
         final JsonSession updated = JsonSession.fromDocumentSnapshot(snapshot);
 
