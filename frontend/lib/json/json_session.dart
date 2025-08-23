@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pong/models/candidate.dart';
 import 'package:pong/models/description.dart';
@@ -42,6 +43,18 @@ class JsonSession {
     calleeCandidates: calleeCandidates?.map((c) => c.object).toList() ?? [],
     status: status,
   );
+
+  factory JsonSession.fromQuerySnapshot(QueryDocumentSnapshot snapshot) {
+    final Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+    return JsonSession.fromJson(data);
+  }
+
+  factory JsonSession.fromDocumentSnapshot(DocumentSnapshot snapshot) {
+    final Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+    return JsonSession.fromJson(data);
+  }
 
   factory JsonSession.fromJson(Map<String, dynamic> json) =>
       _$JsonSessionFromJson(json);

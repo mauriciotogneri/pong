@@ -14,9 +14,9 @@ class Database {
         .get();
 
     if (snapshot.size == 1) {
-      final Map<String, dynamic> data =
-          snapshot.docs.first.data() as Map<String, dynamic>;
-      final JsonSession json = JsonSession.fromJson(data);
+      final JsonSession json = JsonSession.fromQuerySnapshot(
+        snapshot.docs.first,
+      );
 
       return json.object.callerDescription;
     } else {
@@ -37,6 +37,17 @@ class Database {
       status: SessionStatus.offered,
     );
 
-    await collection.add(session.toJson());
+    final DocumentReference reference = await collection.add(session.toJson());
+
+    reference.snapshots().listen((snapshot) {
+      if (snapshot.exists) {
+        final JsonSession updated = JsonSession.fromDocumentSnapshot(snapshot);
+
+        if (updated.calleeDescription != null &&
+            updated.status == SessionStatus.answered) {
+          print('Received answer: ${updated.calleeDescription}');
+        }
+      }
+    });
   }
 }
