@@ -18,7 +18,8 @@ class Session {
     required this.status,
   });
 
-  bool get isAnswered => (callee != null) && (status == SessionStatus.answered);
+  bool get isAnswered =>
+      (callee != null) && (status == SessionStatus.answer_ready);
 
   bool get hasCallerCandidates =>
       (caller != null) && (caller!.candidates.isNotEmpty);
@@ -27,6 +28,14 @@ class Session {
       (callee != null) && (callee!.candidates.isNotEmpty);
 
   Session withId(String id) => Session(
+    id: id,
+    createdAt: createdAt,
+    caller: caller,
+    callee: callee,
+    status: status,
+  );
+
+  Session withStatus(SessionStatus status) => Session(
     id: id,
     createdAt: createdAt,
     caller: caller,
@@ -66,6 +75,6 @@ class Session {
       candidates: [],
     ),
     callee: null,
-    status: SessionStatus.offered,
+    status: SessionStatus.offer_ready,
   );
 }

@@ -14,7 +14,7 @@ class Database {
     required Function(Session session) onCallerCandidatesReady,
   }) async {
     final QuerySnapshot snapshot = await collection
-        .where('status', isEqualTo: SessionStatus.offered.name)
+        .where('status', isEqualTo: SessionStatus.offer_ready.name)
         .limit(1)
         .get();
 

@@ -28,7 +28,7 @@ Map<String, dynamic> _$JsonSessionToJson(JsonSession instance) =>
     };
 
 const _$SessionStatusEnumMap = {
-  SessionStatus.offered: 'offered',
-  SessionStatus.answered: 'answered',
+  SessionStatus.offer_ready: 'offered',
+  SessionStatus.answer_ready: 'answered',
   SessionStatus.connected: 'connected',
 };

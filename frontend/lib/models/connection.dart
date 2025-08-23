@@ -4,6 +4,7 @@ import 'package:pong/models/database.dart';
 import 'package:pong/models/description.dart';
 import 'package:pong/models/peer.dart';
 import 'package:pong/models/session.dart';
+import 'package:pong/types/session_status.dart';
 
 class Connection {
   RTCPeerConnection? _peerConnection;
@@ -151,12 +152,14 @@ class Connection {
     );
     await _peerConnection!.setLocalDescription(local);
 
-    final Session newSession = session.withCallee(
-      Peer(
-        description: Description.fromDescription(local),
-        candidates: [],
-      ),
-    );
+    final Session newSession = session
+        .withCallee(
+          Peer(
+            description: Description.fromDescription(local),
+            candidates: [],
+          ),
+        )
+        .withStatus(SessionStatus.answer_ready);
 
     await Database.updateSession(newSession);
   }
@@ -164,12 +167,14 @@ class Connection {
   Future _onAnswerReady(Session session) async {
     await _setRemoteDescription(session.callee!.description);
 
-    final Session newSession = session.withCaller(
-      Peer(
-        description: session.caller!.description,
-        candidates: _candidates,
-      ),
-    );
+    final Session newSession = session
+        .withCaller(
+          Peer(
+            description: session.caller!.description,
+            candidates: _candidates,
+          ),
+        )
+        .withStatus(SessionStatus.caller_candidates_ready);
 
     await Database.updateSession(newSession);
   }
@@ -177,12 +182,15 @@ class Connection {
   Future _onCallerCandidatesReady(Session session) async {
     await _addCandidates(session.caller!.candidates);
 
-    final Session newSession = session.withCallee(
-      Peer(
-        description: session.callee!.description,
-        candidates: _candidates,
-      ),
-    );
+    final Session newSession = session
+        .withCallee(
+          Peer(
+            description: session.callee!.description,
+            candidates: _candidates,
+          ),
+        )
+        .withStatus(SessionStatus.callee_candidates_ready);
+
     await Database.updateSession(newSession);
   }
 
