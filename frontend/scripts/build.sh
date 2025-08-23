@@ -3,7 +3,7 @@
 set -e
 
 flutter clean
-flutter build web --wasm -t lib/main/main_remote.dart --release
+flutter build web --wasm -t lib/main.dart --release
 
 OUTPUT="../backend/public"
 rm -r ${OUTPUT}
