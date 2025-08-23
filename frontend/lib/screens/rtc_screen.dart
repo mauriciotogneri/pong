@@ -15,7 +15,7 @@ class RtcScreen extends StatelessWidget {
       body: StateProvider<RtcState>(
         state: state,
         builder: (context, state) => Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(10),
           child: Column(
             children: [
               ElevatedButton(
@@ -26,7 +26,22 @@ class RtcScreen extends StatelessWidget {
                 onPressed: state.isConnected ? state.onSend : null,
                 child: const Text('Send'),
               ),
-              Text('Received: ${state.received}'),
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black, width: 1),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(state.received),
+              ),
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black, width: 1),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(state.log),
+              ),
             ],
           ),
           /*Column(
