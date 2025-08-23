@@ -59,19 +59,19 @@ class Connection {
     };
 
     result.onConnectionState = (state) {
-      print('Connection state changed: $state');
+      onLog('Connection state changed: $state');
     };
 
     result.onIceConnectionState = (state) {
-      print('ICE connection state changed: $state');
+      onLog('ICE connection state changed: $state');
     };
 
     result.onIceGatheringState = (state) {
-      print('ICE gathering state changed: $state');
+      onLog('ICE gathering state changed: $state');
     };
 
     result.onSignalingState = (state) {
-      print('Signaling state changed: $state');
+      onLog('Signaling state changed: $state');
     };
 
     result.onDataChannel = (channel) {
@@ -158,13 +158,15 @@ class Connection {
 
   void send(String message) {
     _dataChannel?.send(RTCDataChannelMessage(message));
+    onLog('>>>: $message');
   }
 
   void _onReceive(RTCDataChannelMessage message) {
+    onLog('<<<: ${message.text}');
     onMessage(message.text);
   }
 
   void _onStateChanged(RTCDataChannelState state) {
-    print('State changed: $state');
+    onLog('State changed: $state');
   }
 }
