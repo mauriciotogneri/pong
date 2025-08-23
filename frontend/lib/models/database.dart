@@ -55,7 +55,7 @@ class Database {
         final JsonSession json = JsonSession.fromDocumentSnapshot(snapshot);
         final Session session = json.object;
 
-        if (session.isAnswered) {
+        if (session.hasAnswer) {
           onAnswerReady(session);
         } else if (session.hasCalleeCandidates) {
           onCalleeCandidatesReady(session);

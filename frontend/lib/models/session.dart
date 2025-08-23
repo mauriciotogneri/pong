@@ -18,14 +18,18 @@ class Session {
     required this.status,
   });
 
-  bool get isAnswered =>
+  bool get hasAnswer =>
       (callee != null) && (status == SessionStatus.answer_ready);
 
   bool get hasCallerCandidates =>
-      (caller != null) && (caller!.candidates.isNotEmpty);
+      (caller != null) &&
+      (caller!.candidates.isNotEmpty) &&
+      (status == SessionStatus.caller_candidates_ready);
 
   bool get hasCalleeCandidates =>
-      (callee != null) && (callee!.candidates.isNotEmpty);
+      (callee != null) &&
+      (callee!.candidates.isNotEmpty) &&
+      (status == SessionStatus.callee_candidates_ready);
 
   Session withId(String id) => Session(
     id: id,
