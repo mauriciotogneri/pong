@@ -100,11 +100,7 @@ class Connection {
     );
     await _peerConnection!.setLocalDescription(local);
 
-    final Description description = Description(
-      sdp: local.sdp,
-      type: local.type,
-    );
-    print(description);
+    await Database.createSession(Description.fromDescription(local));
   }
 
   Future _createAnswer(Description description) async {
@@ -115,10 +111,7 @@ class Connection {
     );
     await _peerConnection!.setLocalDescription(local);
 
-    final Description answer = Description(
-      sdp: local.sdp,
-      type: local.type,
-    );
+    final Description answer = Description.fromDescription(local);
     print(answer);
   }
 
