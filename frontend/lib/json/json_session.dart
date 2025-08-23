@@ -7,7 +7,7 @@ import 'package:pong/types/session_status.dart';
 
 part 'json_session.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class JsonSession {
   @JsonKey(name: 'createdAt')
   final DateTime createdAt;
@@ -62,7 +62,7 @@ class JsonSession {
   Map<String, dynamic> toJson() => _$JsonSessionToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class JsonDescription {
   @JsonKey(name: 'sdp')
   final String? sdp;
@@ -86,7 +86,7 @@ class JsonDescription {
   Map<String, dynamic> toJson() => _$JsonDescriptionToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class JsonCandidate {
   @JsonKey(name: 'candidate')
   final String? candidate;

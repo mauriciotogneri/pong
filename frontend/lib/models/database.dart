@@ -41,7 +41,8 @@ class Database {
       status: SessionStatus.offered,
     );
 
-    final DocumentReference reference = await collection.add(session.toJson());
+    final Map<String, dynamic> data = session.toJson();
+    final DocumentReference reference = await collection.add(data);
 
     reference.snapshots().listen((snapshot) {
       if (snapshot.exists) {
