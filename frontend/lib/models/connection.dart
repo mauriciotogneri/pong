@@ -163,7 +163,6 @@ class Connection {
 
   Future _onAnswerReady(Session session) async {
     await _setRemoteDescription(session.callee!.description);
-    // TODO(momo): send candidates
 
     final Session newSession = session.withCaller(
       Peer(
@@ -171,6 +170,7 @@ class Connection {
         candidates: _candidates,
       ),
     );
+
     await Database.updateSession(newSession);
   }
 
