@@ -8,6 +8,9 @@ part 'json_session.g.dart';
 
 @JsonSerializable()
 class JsonSession {
+  @JsonKey(name: 'id')
+  final String id;
+
   @JsonKey(name: 'createdAt')
   final DateTime createdAt;
 
@@ -21,6 +24,7 @@ class JsonSession {
   final SessionStatus status;
 
   JsonSession({
+    required this.id,
     required this.createdAt,
     required this.caller,
     required this.callee,
@@ -28,6 +32,7 @@ class JsonSession {
   });
 
   Session get object => Session(
+    id: id,
     createdAt: createdAt,
     caller: caller?.object,
     callee: callee?.object,

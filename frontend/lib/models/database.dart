@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pong/json/json_session.dart';
 import 'package:pong/models/candidate.dart';
-import 'package:pong/models/description.dart';
 import 'package:pong/models/session.dart';
 import 'package:pong/types/session_status.dart';
 
@@ -43,16 +42,16 @@ class Database {
   }
 
   static Future createOffer({
-    required Description description,
+    required Session session,
     required Function(Session) onAnswerReady,
     required Function(List<Candidate>) onCandidatesReady,
   }) async {
-    final Session session = Session.create(description);
-    final JsonSession json = session.toJson();
-    final DocumentReference reference = await collection.add(json.toJson());
+    final DocumentReference doc = collection.doc();
+    final JsonSession json = session.withId(doc.id).toJson();
+    await doc.set(json.toJson());
 
     StreamSubscription? subscription;
-    subscription = reference.snapshots().listen((snapshot) {
+    subscription = doc.snapshots().listen((snapshot) {
       if (snapshot.exists) {
         final JsonSession json = JsonSession.fromDocumentSnapshot(snapshot);
         final Session session = json.object;
@@ -67,8 +66,9 @@ class Database {
     });
   }
 
-  static Future createAnswer(Session session) async {
+  static Future updateSession(Session session) async {
     final JsonSession json = session.toJson();
-    await collection.add(json.toJson());
+    final DocumentReference doc = collection.doc(session.id);
+    await doc.set(json.toJson());
   }
 }

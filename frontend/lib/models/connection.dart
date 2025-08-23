@@ -34,6 +34,7 @@ class Connection {
     await Database.searchSession(
       onOfferNeeded: _onOfferNeeded,
       onAnswerNeeded: _onAnswerNeeded,
+      onCandidatesReady: _addCandidates,
     );
   }
 
@@ -136,7 +137,7 @@ class Connection {
     await _peerConnection!.setLocalDescription(local);
 
     await Database.createOffer(
-      description: Description.fromDescription(local),
+      session: Session.create(Description.fromDescription(local)),
       onAnswerReady: _onAnswerReady,
       onCandidatesReady: _addCandidates,
     );
@@ -157,11 +158,11 @@ class Connection {
       ),
     );
 
-    await Database.createAnswer(newSession);
+    await Database.updateSession(newSession);
   }
 
-  void _onAnswerReady(Session session) {
-    _setRemoteDescription(session.callee!.description);
+  Future _onAnswerReady(Session session) async {
+    await _setRemoteDescription(session.callee!.description);
     // TODO(momo): send candidates
 
     final Session newSession = session.withCaller(
@@ -170,5 +171,6 @@ class Connection {
         candidates: _candidates,
       ),
     );
+    await Database.updateSession(newSession);
   }
 }

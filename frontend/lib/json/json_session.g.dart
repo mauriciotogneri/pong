@@ -7,6 +7,7 @@ part of 'json_session.dart';
 // **************************************************************************
 
 JsonSession _$JsonSessionFromJson(Map<String, dynamic> json) => JsonSession(
+  id: json['id'] as String,
   createdAt: DateTime.parse(json['createdAt'] as String),
   caller: json['caller'] == null
       ? null
@@ -19,6 +20,7 @@ JsonSession _$JsonSessionFromJson(Map<String, dynamic> json) => JsonSession(
 
 Map<String, dynamic> _$JsonSessionToJson(JsonSession instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'createdAt': instance.createdAt.toIso8601String(),
       'caller': instance.caller?.toJson(),
       'callee': instance.callee?.toJson(),
