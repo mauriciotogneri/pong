@@ -21,6 +21,9 @@ class Session {
   bool get hasCallerCandidates =>
       (caller != null) && (caller!.candidates.isNotEmpty);
 
+  bool get hasCalleeCandidates =>
+      (callee != null) && (callee!.candidates.isNotEmpty);
+
   Session withCaller(Peer caller) => Session(
     createdAt: createdAt,
     caller: caller,

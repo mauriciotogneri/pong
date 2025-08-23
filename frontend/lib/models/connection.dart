@@ -135,9 +135,10 @@ class Connection {
     );
     await _peerConnection!.setLocalDescription(local);
 
-    await Database.offerCreated(
+    await Database.createOffer(
       description: Description.fromDescription(local),
       onAnswered: _onOfferAnswered,
+      onCandidatesReady: _addCandidates,
     );
   }
 
@@ -156,10 +157,7 @@ class Connection {
       ),
     );
 
-    await Database.answerCreated(
-      session: newSession,
-      onCallerCandidatesReady: _addCandidates,
-    );
+    await Database.createAnswer(session: newSession);
   }
 
   void _onOfferAnswered(Session session) {

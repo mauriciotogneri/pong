@@ -13,6 +13,7 @@ class Database {
   static Future searchSession({
     required Function() onOfferNeeded,
     required Function(Session) onAnswerNeeded,
+    required Function(List<Candidate>) onCandidatesReady,
   }) async {
     final QuerySnapshot snapshot = await collection
         .where('status', isEqualTo: SessionStatus.offered.name)
@@ -20,19 +21,31 @@ class Database {
         .get();
 
     if (snapshot.size == 1) {
-      final JsonSession json = JsonSession.fromQuerySnapshot(
-        snapshot.docs.first,
-      );
-
+      final QueryDocumentSnapshot doc = snapshot.docs.first;
+      final JsonSession json = JsonSession.fromQuerySnapshot(doc);
       await onAnswerNeeded(json.object);
+
+      StreamSubscription? subscription;
+      subscription = doc.reference.snapshots().listen((snapshot) {
+        if (snapshot.exists) {
+          final JsonSession json = JsonSession.fromDocumentSnapshot(snapshot);
+          final Session session = json.object;
+
+          if (session.hasCallerCandidates) {
+            onCandidatesReady(session.caller!.candidates);
+            subscription?.cancel();
+          }
+        }
+      });
     } else {
       await onOfferNeeded();
     }
   }
 
-  static Future offerCreated({
+  static Future createOffer({
     required Description description,
     required Function(Session) onAnswered,
+    required Function(List<Candidate>) onCandidatesReady,
   }) async {
     final Session session = Session.create(description);
     final JsonSession json = session.toJson();
@@ -46,30 +59,18 @@ class Database {
 
         if (session.isAnswered) {
           onAnswered(session);
+        } else if (session.hasCalleeCandidates) {
+          onCandidatesReady(session.callee!.candidates);
           subscription?.cancel();
         }
       }
     });
   }
 
-  static Future answerCreated({
+  static Future createAnswer({
     required Session session,
-    required Function(List<Candidate>) onCallerCandidatesReady,
   }) async {
     final JsonSession json = session.toJson();
     final DocumentReference reference = await collection.add(json.toJson());
-
-    StreamSubscription? subscription;
-    subscription = reference.snapshots().listen((snapshot) {
-      if (snapshot.exists) {
-        final JsonSession json = JsonSession.fromDocumentSnapshot(snapshot);
-        final Session session = json.object;
-
-        if (session.hasCallerCandidates) {
-          onCallerCandidatesReady(session.caller!.candidates);
-          subscription?.cancel();
-        }
-      }
-    });
   }
 }
