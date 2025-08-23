@@ -8,8 +8,12 @@ class Connection {
   RTCDataChannel? _dataChannel;
   final List<Candidate> _candidates = [];
   final Function(String) onMessage;
+  final Function(String) onLog;
 
-  Connection({required this.onMessage});
+  Connection({
+    required this.onMessage,
+    required this.onLog,
+  });
 
   bool get isConnected =>
       _dataChannel?.state == RTCDataChannelState.RTCDataChannelOpen;

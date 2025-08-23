@@ -3,10 +3,14 @@ import 'package:pong/models/connection.dart';
 
 class RtcState extends BaseState {
   String received = '';
+  String log = '';
   late final Connection connection;
 
   RtcState() {
-    connection = Connection(onMessage: _onMessage);
+    connection = Connection(
+      onMessage: _onMessage,
+      onLog: _onLog,
+    );
   }
 
   bool get isConnected => connection.isConnected;
@@ -16,8 +20,12 @@ class RtcState extends BaseState {
   void onSend() => connection.send('Hello!');
 
   void _onMessage(String message) {
-    print('Received message: $message');
     received = message;
+    notify();
+  }
+
+  void _onLog(String message) {
+    log += '$message\n';
     notify();
   }
 }
