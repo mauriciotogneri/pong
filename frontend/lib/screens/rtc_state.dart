@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dafluta/dafluta.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:pong/models/answer.dart';
 import 'package:pong/models/candidate.dart';
-import 'package:pong/models/offer.dart';
+import 'package:pong/models/description.dart';
 
 class RtcState extends BaseState {
   RTCPeerConnection? _peerConnection;
@@ -17,10 +16,10 @@ class RtcState extends BaseState {
   Future onConnect() async {
     _peerConnection = await _createConnection();
 
-    final Offer? offer = await _getExistingOffer();
+    final Description? description = await _getExistingOffer();
 
-    if (offer != null) {
-      await _createAnswer(offer);
+    if (description != null) {
+      await _createAnswer(description);
     } else {
       await _createOffer();
     }
@@ -78,7 +77,7 @@ class RtcState extends BaseState {
     return result;
   }
 
-  Future<Offer?> _getExistingOffer() async {
+  Future<Description?> _getExistingOffer() async {
     final QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection('connections')
         .where('status', isEqualTo: 'offered')
@@ -86,7 +85,11 @@ class RtcState extends BaseState {
         .get();
 
     if (snapshot.size == 1) {
-      return null; // snapshot.docs.first.data();
+      // TODO(momo): read snapshot
+      return const Description(
+        sdp: '',
+        type: '',
+      );
     } else {
       return null;
     }
@@ -105,36 +108,32 @@ class RtcState extends BaseState {
     );
     await _peerConnection!.setLocalDescription(local);
 
-    final Offer offer = Offer(
+    final Description description = Description(
       sdp: local.sdp,
       type: local.type,
     );
-    print(offer);
+    print(description);
   }
 
-  Future _createAnswer(Offer offer) async {
-    final RTCSessionDescription remote = RTCSessionDescription(
-      offer.sdp,
-      offer.type,
-    );
-    await _peerConnection!.setRemoteDescription(remote);
+  Future _createAnswer(Description description) async {
+    await _setRemoteDescription(description);
 
     final RTCSessionDescription local = await _peerConnection!.createAnswer(
       _sdpConstraints,
     );
     await _peerConnection!.setLocalDescription(local);
 
-    final Answer answer = Answer(
+    final Description answer = Description(
       sdp: local.sdp,
       type: local.type,
     );
     print(answer);
   }
 
-  Future _setRemoteDescription(Answer answer) async {
+  Future _setRemoteDescription(Description description) async {
     final RTCSessionDescription remote = RTCSessionDescription(
-      answer.sdp,
-      answer.type,
+      description.sdp,
+      description.type,
     );
     await _peerConnection!.setRemoteDescription(remote);
   }

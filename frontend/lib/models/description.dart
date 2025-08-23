@@ -1,8 +1,8 @@
-class Offer {
+class Description {
   final String? sdp;
   final String? type;
 
-  const Offer({
+  const Description({
     required this.sdp,
     required this.type,
   });
