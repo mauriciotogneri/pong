@@ -43,6 +43,7 @@ class RtcState extends BaseState {
     });
 
     result.onIceCandidate = (candidate) {
+      // TODO(momo): new candidates must be sent to the peer if they change during the connection
       _candidates.add(
         Candidate(
           candidate: candidate.candidate,
