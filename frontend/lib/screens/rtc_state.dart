@@ -26,10 +26,20 @@ class RtcState extends BaseState {
     }
   }
 
+  final Map<String, dynamic> _sdpConstraints = {
+    'mandatory': {
+      'OfferToReceiveAudio': false,
+      'OfferToReceiveVideo': false,
+    },
+    'optional': [],
+  };
+
   Future<RTCPeerConnection> _createConnection() async {
     final RTCPeerConnection result = await createPeerConnection({
       'iceServers': [
-        {'urls': 'stun:stun.l.google.com:19302'},
+        {'urls': 'stun:stun.l.google.com:19302'}, // Google's public STUN server
+        // Add TURN server if necessary for more robust connectivity
+        // {'urls': 'turn:YOUR_TURN_SERVER_URL', 'username': 'YOUR_USERNAME', 'credential': 'YOUR_PASSWORD'},
       ],
     });
 
@@ -41,6 +51,22 @@ class RtcState extends BaseState {
           sdpMLineIndex: candidate.sdpMLineIndex,
         ),
       );
+    };
+
+    result.onConnectionState = (state) {
+      print('Connection state changed: $state');
+    };
+
+    result.onIceConnectionState = (state) {
+      print('ICE connection state changed: $state');
+    };
+
+    result.onIceGatheringState = (state) {
+      print('ICE gathering state changed: $state');
+    };
+
+    result.onSignalingState = (state) {
+      print('Signaling state changed: $state');
     };
 
     result.onDataChannel = (channel) {
@@ -74,7 +100,9 @@ class RtcState extends BaseState {
     _dataChannel = channel;
     // TODO(momo): set callbacks?
 
-    final RTCSessionDescription local = await _peerConnection!.createOffer();
+    final RTCSessionDescription local = await _peerConnection!.createOffer(
+      _sdpConstraints,
+    );
     await _peerConnection!.setLocalDescription(local);
 
     final Offer offer = Offer(
@@ -91,7 +119,9 @@ class RtcState extends BaseState {
     );
     await _peerConnection!.setRemoteDescription(remote);
 
-    final RTCSessionDescription local = await _peerConnection!.createAnswer();
+    final RTCSessionDescription local = await _peerConnection!.createAnswer(
+      _sdpConstraints,
+    );
     await _peerConnection!.setLocalDescription(local);
 
     final Answer answer = Answer(
