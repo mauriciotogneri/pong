@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:pong/models/description.dart';
+import 'package:webrtc/models/description.dart';
 
 part 'json_description.g.dart';
 

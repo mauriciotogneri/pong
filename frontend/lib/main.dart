@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:pong/app/pong.dart';
-import 'package:pong/utils/error_handler.dart';
-import 'package:pong/utils/locator.dart';
+import 'package:webrtc/app/webrtc.dart';
+import 'package:webrtc/utils/error_handler.dart';
+import 'package:webrtc/utils/locator.dart';
 
 void main() {
   runZonedGuarded(() async {
     await Locator.load();
-    runApp(const Pong());
+    runApp(const WebRTC());
   }, ErrorHandler.onUncaughtError);
 }

@@ -1,7 +1,7 @@
-import 'package:pong/json/json_session.dart';
-import 'package:pong/models/description.dart';
-import 'package:pong/models/peer.dart';
-import 'package:pong/types/session_status.dart';
+import 'package:webrtc/json/json_session.dart';
+import 'package:webrtc/models/description.dart';
+import 'package:webrtc/models/peer.dart';
+import 'package:webrtc/types/session_status.dart';
 
 class Session {
   final String id;

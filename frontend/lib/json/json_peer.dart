@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:pong/json/json_candidate.dart';
-import 'package:pong/json/json_description.dart';
-import 'package:pong/models/peer.dart';
+import 'package:webrtc/json/json_candidate.dart';
+import 'package:webrtc/json/json_description.dart';
+import 'package:webrtc/models/peer.dart';
 
 part 'json_peer.g.dart';
 

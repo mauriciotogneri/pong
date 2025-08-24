@@ -1,6 +1,6 @@
 import 'package:dafluta/dafluta.dart';
 import 'package:flutter/material.dart';
-import 'package:pong/utils/locator.dart';
+import 'package:webrtc/utils/locator.dart';
 
 class Navigation {
   final Routes routes = Routes();

@@ -1,6 +1,6 @@
-import 'package:pong/json/json_peer.dart';
-import 'package:pong/models/candidate.dart';
-import 'package:pong/models/description.dart';
+import 'package:webrtc/json/json_peer.dart';
+import 'package:webrtc/models/candidate.dart';
+import 'package:webrtc/models/description.dart';
 
 class Peer {
   final Description description;

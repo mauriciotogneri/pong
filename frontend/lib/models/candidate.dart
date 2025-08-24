@@ -1,4 +1,4 @@
-import 'package:pong/json/json_candidate.dart';
+import 'package:webrtc/json/json_candidate.dart';
 
 class Candidate {
   final String? candidate;

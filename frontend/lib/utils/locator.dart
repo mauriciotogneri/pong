@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
-import 'package:pong/utils/navigation.dart';
-import 'package:pong/utils/platform.dart';
+import 'package:webrtc/utils/navigation.dart';
+import 'package:webrtc/utils/platform.dart';
 
 final GetIt locator = GetIt.instance;
 

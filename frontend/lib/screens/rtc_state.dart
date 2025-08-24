@@ -1,5 +1,5 @@
 import 'package:dafluta/dafluta.dart';
-import 'package:pong/models/connection.dart';
+import 'package:webrtc/models/connection.dart';
 
 class RtcState extends BaseState {
   String log = '';

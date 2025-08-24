@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:pong/models/candidate.dart';
-import 'package:pong/models/database.dart';
-import 'package:pong/models/description.dart';
-import 'package:pong/models/peer.dart';
-import 'package:pong/models/session.dart';
-import 'package:pong/types/session_status.dart';
+import 'package:webrtc/models/candidate.dart';
+import 'package:webrtc/models/database.dart';
+import 'package:webrtc/models/description.dart';
+import 'package:webrtc/models/peer.dart';
+import 'package:webrtc/models/session.dart';
+import 'package:webrtc/types/session_status.dart';
 
 class Connection {
   RTCPeerConnection? _peerConnection;

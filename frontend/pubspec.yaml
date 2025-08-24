@@ -1,5 +1,5 @@
-name: pong
-description: Frontend app for Pong
+name: webrtc
+description: Frontend app for WebRTC
 publish_to: none
 version: 0.0.1+1
 

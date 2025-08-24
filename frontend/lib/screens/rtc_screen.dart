@@ -1,6 +1,6 @@
 import 'package:dafluta/dafluta.dart';
 import 'package:flutter/material.dart';
-import 'package:pong/screens/rtc_state.dart';
+import 'package:webrtc/screens/rtc_state.dart';
 
 class RtcScreen extends StatelessWidget {
   final RtcState state;

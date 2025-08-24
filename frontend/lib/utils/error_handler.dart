@@ -1,7 +1,7 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
-import 'package:pong/utils/log.dart';
-import 'package:pong/utils/platform.dart';
+import 'package:webrtc/utils/log.dart';
+import 'package:webrtc/utils/platform.dart';
 
 class ErrorHandler {
   static Future process(Object exception) async {

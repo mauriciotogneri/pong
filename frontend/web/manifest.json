@@ -1,7 +1,7 @@
 {
-    "name": "pong",
-    "short_name": "pong",
-    "description": "pong",
+    "name": "webrtc",
+    "short_name": "webrtc",
+    "description": "webrtc",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#000000",

@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:pong/json/json_session.dart';
-import 'package:pong/models/session.dart';
-import 'package:pong/types/session_status.dart';
+import 'package:webrtc/json/json_session.dart';
+import 'package:webrtc/models/session.dart';
+import 'package:webrtc/types/session_status.dart';
 
 class Database {
   static CollectionReference get collection =>

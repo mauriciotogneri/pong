@@ -1,5 +1,5 @@
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:pong/json/json_description.dart';
+import 'package:webrtc/json/json_description.dart';
 
 class Description {
   final String? sdp;

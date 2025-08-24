@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:pong/models/candidate.dart';
+import 'package:webrtc/models/candidate.dart';
 
 part 'json_candidate.g.dart';
 
